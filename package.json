@@ -1,7 +1,7 @@
 {
   "name": "cc-terminal-app",
   "description": "AngularJs Web based terminal module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "peerDependencies": {
     "@angular/common": "^7.0.0",
     "@angular/core": "^7.0.0"
@@ -39,7 +39,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build-lib": "ng build cc-terminal"
+    "build-lib": "ng build cc-terminal && node ./projects/cc-terminal/assets-copy.js"
   },
   "private": true,
   "dependencies": {
@@ -54,6 +54,7 @@
     "@angular/router": "~7.0.0",
     "core-js": "^2.5.4",
     "rxjs": "~6.3.3",
+    "wrench": "^1.5.9",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
