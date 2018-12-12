@@ -1,0 +1,66 @@
+.cc_terminal {
+  background-color: #000;
+  height: 500px;
+  margin: auto;
+  color: #12e012;
+  font-family: monospace;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  font-size: 12px;
+  border: none;
+  border-radius: 0;
+  text-shadow: 0 0 6px rgba(255, 255, 255, .8);
+  box-shadow: 0 0 20px #12e012 inset, 2px 2px 16px #000;
+  transition: linear box-shadow .2s;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  clear: both;
+}
+
+.cc_terminal_focused.cc_terminal {
+  box-shadow: 0 0 20px #12e012 inset, 0 0 2px #000, 0 0 16px rgba(0, 175, 22, 0.84);
+  border: none;
+}
+
+.cc_terminal_viewport {
+  overflow-x: hidden;
+  padding: 0;
+  height: 94%;
+  margin: 15px;
+  overflow-y: scroll;
+}
+
+.cc_terminal_input {
+  overflow-wrap: break-word;
+}
+
+.cc_terminal_cursor {
+  visibility: visible;
+}
+
+.cc_terminal_cursor_hidden {
+  /*visibility:hidden;*/
+  display: none;
+}
+
+.cc_terminal_target {
+  vertical-align: bottom;
+  opacity: 0;
+  color: transparent;
+  height: 1px;
+  width: 1px;
+}
+
+.cc_terminal_results {
+  display: block;
+}
+
+.cc_terminal_line {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  margin: 10px auto;
+}

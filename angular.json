@@ -129,6 +129,41 @@
           }
         }
       }
+    },
+    "cc-terminal": {
+      "root": "projects/cc-terminal",
+      "sourceRoot": "projects/cc-terminal/src",
+      "projectType": "library",
+      "prefix": "cc",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/cc-terminal/tsconfig.lib.json",
+            "project": "projects/cc-terminal/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/cc-terminal/src/test.ts",
+            "tsConfig": "projects/cc-terminal/tsconfig.spec.json",
+            "karmaConfig": "projects/cc-terminal/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/cc-terminal/tsconfig.lib.json",
+              "projects/cc-terminal/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "cc-terminal-app"

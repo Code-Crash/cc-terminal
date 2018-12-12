@@ -7,4 +7,18 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'cc-terminal-app';
+  _externalConfig: any;
+
+  constructor() {
+    // Add more config support
+    this._externalConfig = {
+      classes: {
+        section: '',
+        viewport: '',
+        input: '',
+        cursor: ''
+      }
+    };
+
+  }
 }

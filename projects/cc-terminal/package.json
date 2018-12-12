@@ -1,0 +1,48 @@
+{
+  "name": "cc-terminal",
+  "version": "0.0.1",
+  "description": "AngularJs Web based terminal module",
+  "peerDependencies": {
+    "@angular/common": "^7.0.0",
+    "@angular/core": "^7.0.0"
+  },
+  "author": {
+    "name": "Pravin Tiwari",
+    "email": "pravintiwari1992@gmail.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Code-Crash/cc-terminal.git"
+  },
+  "homepage": "https://github.com/Code-Crash/cc-terminal",
+  "bugs": {
+    "url": "https://github.com/Code-Crash/cc-terminal/issues"
+  },
+  "keywords": [
+    "angular",
+    "angular2",
+    "angular 2",
+    "angular4",
+    "angular 4",
+    "angular6",
+    "angular 6",
+    "terminal",
+    "web terminal",
+    "angular terminal",
+    "angular 2 terminal"
+  ],
+  "main": "bundles/cc-terminal.umd.js",
+  "module": "fesm5/cc-terminal.js",
+  "es2015": "fesm2015/cc-terminal.js",
+  "esm5": "esm5/cc-terminal.js",
+  "esm2015": "esm2015/cc-terminal.js",
+  "fesm5": "fesm5/cc-terminal.js",
+  "fesm2015": "fesm2015/cc-terminal.js",
+  "typings": "cc-terminal.d.ts",
+  "metadata": "cc-terminal.metadata.json",
+  "sideEffects": false,
+  "dependencies": {
+    "tslib": "^1.9.0"
+  }
+}

@@ -1,0 +1,19 @@
+<section class='cc_terminal' on-mouseover="_mouseover()" on-mouseleave="_mouseleave()" #cc_terminal id="cc_terminal"
+  on-paste='_handlePaste($event)' [ngClass]="externalConfig?.classes?.section">
+  <div class='cc_terminal_viewport' #cc_terminal_viewport id="cc_terminal_viewport" on-click="_clickHandler()"
+    [ngClass]="externalConfig?.classes?.viewport">
+    <div class='cc_terminal_results' #cc_terminal_results id="cc_terminal_results">
+    </div>
+    <span class='cc_terminal_prompt' *ngIf='_showPrompt'>
+      {{ _prompt?.text }}
+    </span>
+    <span class='cc_terminal_input' [ngClass]="externalConfig?.classes?.input">
+      {{ _command }}
+    </span>
+    <span class='cc_terminal_cursor' [ngClass]="externalConfig?.classes?.cursor" *ngIf='_showPrompt'>
+      {{ _cursor }}
+    </span>
+    <input type='text' class='cc_terminal_target' [(ngModel)]='_command' (blur)="_blur()" (focus)="_focus()" on-keydown="_keydown($event)"
+      on-keypress="_key($event)" #cc_terminal_target id="cc_terminal_target" />
+  </div>
+</section>
