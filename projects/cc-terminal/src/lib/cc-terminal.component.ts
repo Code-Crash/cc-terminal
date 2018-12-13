@@ -111,8 +111,8 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
       outputDelay: 8, // Output display should be more than 0
       allowTypingWriteDisplaying: true,
       maxHistory: 50,
-      typeSoundUrl: 'assets/type.wav',
-      startSoundUrl: 'assets/start.wav',
+      typeSoundUrl: './assets/type.wav',
+      startSoundUrl: './assets/start.wav',
       promptConfiguration: { end: ':>', user: 'CodeCrash', separator: '@', path: '\\' }
     };
   }
