@@ -52,8 +52,6 @@ import { CcTerminalModule } from 'cc-terminal';
 Note: There are more to come, please have patience! :)
 ```
 
-- [ ] Write a doc first, and provide the link. (mean while you can check it in src/app/ folder, how to use).
-
 ## TODO:
 
 - [ ] Add classes to re design the terminal configuration from External Module.

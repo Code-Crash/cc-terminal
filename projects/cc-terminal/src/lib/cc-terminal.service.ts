@@ -75,32 +75,75 @@ export class CcTerminalService {
    */
   public interpret(cmd: any) {
     const prompt = this.getPrompt();
-    if (cmd.command === 'help') {
+
+    /**
+     * @description - Regex for exact match command
+     *   note: we can add this in constants
+     */
+    const regex = { // We can design the exact match regex based command also.
+      alert: /^alert$/,
+    };
+
+    const command = (cmd.command || '').split(' ');
+    if (command[0] === 'help') {
       this.broadcast('terminal-output', {
         output: true,
-        text: [prompt.text + cmd.command,
-          'List of available commands',
-          'help   clear   reset',
-          // 'Please type {#command help} to see specific help'
+        result: [
+          { text: prompt.text + cmd.command, },
+          { text: 'List of available commands' },
+          { text: 'help   clear   reset' },
         ],
         breakLine: true,
       });
-    } else if (cmd.command === 'codecrash') {
+    } else if (command[0] === 'codecrash') {
       this.broadcast('terminal-output', {
         output: true,
-        text: [prompt.text + cmd.command,
-          'Hello Code'],
+        result: [
+          { text: prompt.text + cmd.command, },
+          { text: 'Hello Code' },
+        ],
         breakLine: true,
       });
     } else {
-      this.broadcast('terminal-output', {
-        output: true,
-        text: [prompt.text + cmd.command,
-          'Command is not supported. please type "help"',
-          'to see the list of available commands'],
-        breakLine: true,
-      });
+      let result = '';
+      try {
+        result = eval(cmd.command); // eval.call(null, cmd.command);
+        if (result !== undefined) {
+          this.broadcast('terminal-output', {
+            output: true,
+            result: [
+              { text: prompt.text + cmd.command, },
+              { text: '' + result },
+            ],
+            breakLine: true,
+          });
+        }
+      } catch (e) {
+        this.broadcast('terminal-output', {
+          output: true,
+          result: [
+            { text: prompt.text + cmd.command, },
+            { text: '' + e, css: { color: 'red' } },
+          ],
+          breakLine: true,
+        });
+      }
     }
+
+    // Example of how to work with regex based command
+    // else if (regex.alert.test(command[0])) {
+    //   this.broadcast('terminal-output', {
+    //     output: true,
+    //     result: [
+    //        { text: prompt.text + cmd.command, },
+    //        { text: '' + e, css: { color: 'red' } }]
+    //     breakLine: true,
+    //   });
+    //   command.splice(0, 1); // Remove command from command string
+    //   alert(command.join(' '));
+    //   console.log(command);
+    // }
+
   }
 
 

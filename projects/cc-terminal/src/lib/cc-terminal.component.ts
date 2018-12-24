@@ -85,8 +85,7 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
       if (cmd.command === 'clear') {
         this._results.splice(0, this._results.length);
         CcTerminalComponent._clearTerminalResultsChildElements();
-      }
-      if (cmd.command === 'reset') {
+      } else if (cmd.command === 'reset') {
         this._initializeConfig();
         this._results = [];
         CcTerminalComponent._clearTerminalResultsChildElements();
@@ -95,12 +94,9 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
         this.ngOnInit();
         this._blur();
         this._clickHandler();
-        // this.terminalViewport.nativeElement.click();
-        // const el: HTMLElement = this.terminalViewport.nativeElement as HTMLElement;
-        // el.click();
-        // this.terminalViewport.nativeElement.click();
+      } else {
+        _tService.interpret(cmd);
       }
-      _tService.interpret(cmd);
     });
   }
 
@@ -118,7 +114,31 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
   }
 
   _handlePaste(e: any) {
-    this._command += e.clipboardData.getData('text/plain');
+    function is_type(item, type) {
+      return item.type.indexOf(type) !== -1;
+    }
+    if (e.clipboardData) {
+      const items = e.clipboardData.items;
+      if (items) {
+        for (let i = 0; i < items.length; i++) {
+          if (is_type(items[i], 'image')) {
+            this._tService.broadcast('terminal-output', {
+              output: true,
+              result: [{ text: this._prompt.text + this._command }, { text: 'You can\'t paste file' }],
+              breakLine: true,
+            });
+          } else if (is_type(items[i], 'text/plain')) {
+            items[i].getAsString((string, stay) => {
+              this._command = string;
+            });
+          }
+        }
+      } else if (e.clipboardData.getData) {
+        const text = e.clipboardData.getData('text/plain');
+        this._command = text;
+      }
+      return false;
+    }
   }
 
   ngOnInit() {
@@ -157,14 +177,14 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
     const change = this._results[this._results.length - 1];
     const spanElement = this.renderer.createElement('span');
     if (this._outputDelay) {
-      for (let i = change.text.length - 1; i >= 0; i--) { // only reverse loop will type out the lines with delay proper and in order
+      for (let i = change.result.length - 1; i >= 0; i--) { // only reverse loop will type out the lines with delay proper and in order
         this._createTypedOutputElement(spanElement, change, i, _handlePromptScroll);
       }
       setTimeout(() => { // start line by line typing execution chain to handle show/hide prompt
         _handlePromptScroll[_handlePromptScroll.length - 1]();
       }, 200);
     } else {
-      for (let i = 0; i < change.text.length; i++) { // paste everything at once
+      for (let i = 0; i < change.result.length; i++) { // paste everything at once
         this._createOutputElement(spanElement, change, i);
       }
       if (change.breakLine) {
@@ -186,7 +206,7 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
       const wLine = line; // World Line
       const wTextLine = textLine; // World Text Line
       const wf = _handlePromptScroll[fi]; // to call the next _handlePromptScroll[i] recursively after previous line type has finished
-      const wBreak = i === change.text.length - 1 && change.breakLine; // World Break
+      const wBreak = i === change.result.length - 1 && change.breakLine; // World Break
       _handlePromptScroll.push(() => {
         span.appendChild(wLine); // initialize empty line to type out
         this.terminalResults.nativeElement.appendChild(span);
@@ -210,26 +230,27 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
     const { line } = this._createOutputLineElement(change, i, lineBr);
     span.appendChild(line);
     this.terminalResults.nativeElement.appendChild(span);
-    setTimeout(() => {
-      // this.renderer.setElementClass(line, 'cc_terminal_line', true);
-    }, 1000);
   }
 
   private _createOutputLineElement(change: any, i: number, lineBr: string) {
     const line = this.renderer.createElement('div');
-    if (change.color) {
-      line.style.color = change.color;
+    if (change.result[i] && change.result[i]['css']) {
+      if (Object.keys(change.result[i]['css'] || {}).length) {
+        let style = '';
+        Object.keys(change.result[i]['css'] || {}).forEach((key) => {
+          style += key + ':' + change.result[i]['css'][key] + ';';
+        });
+        line.style = style;
+      }
     }
-    // line.className = 'cc_terminal_line';
-
     this.renderer.addClass(line, 'cc_terminal_line');
     let textLine: string;
     const elWidth = this.terminalViewport.nativeElement.firstElementChild.clientWidth;
     // format -> the stream needs formatting to show with appropriate line breaks on the screen
     if (change.format) {
-      textLine = CcTerminalComponent._insertLineBreakToString(elWidth, change.text[i], lineBr);
+      textLine = CcTerminalComponent._insertLineBreakToString(elWidth, change.result[i].text, lineBr);
     } else {
-      textLine = change.text[i];
+      textLine = (change.result[i] && change.result[i].text) || '';
     }
     return { line, textLine };
   }
@@ -296,10 +317,9 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
   _focus() {
     if (this._initial) {
       this._tService.broadcast('terminal-output', {
-        text: ['How can I help you?'],
+        result: [{ text: 'How can I help you?', css: { color: 'red' } }],
         breakLine: true,
         output: true,
-        color: 'red',
         format: true
       });
     }
@@ -385,7 +405,14 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
     const command = this._cleanNonPrintableCharacters(this._command);
     this._command = '';
     if (!command) {
-      return;
+      // return; // If you want to do nothing if command is only enter, un comment this.
+      this._tService.broadcast('terminal-output', {
+        output: true,
+        result: [
+          { text: this._prompt.text + this._command, },
+        ],
+        breakLine: true,
+      });
     }
     if (this._cmdHistory.length > 10) {
       this._cmdHistory.splice(0, 1);
