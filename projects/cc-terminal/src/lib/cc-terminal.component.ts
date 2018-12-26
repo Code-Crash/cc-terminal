@@ -73,15 +73,13 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
     this._prompt = _tService.initPrompt(this._config);
     this._outputDelay = this._config.outputDelay;
     this._allowTypingWriteDisplaying = this._config.allowTypingWriteDisplaying;
-    const obsTerminalOutput = _tService.on<any>('terminal-output');
-    this._disposableOutputObserver = obsTerminalOutput.subscribe(termOut => {
+    this._disposableOutputObserver = _tService.on<any>('terminal-output').subscribe(termOut => {
       if (!termOut.added) {
         termOut.added = true;
         this._results.push(termOut);
       }
     });
-    const obsTerminalCommand = _tService.on<any>('terminal-command');
-    this._disposableCommandObserver = obsTerminalCommand.subscribe(cmd => {
+    this._disposableCommandObserver = _tService.on<any>('terminal-command').subscribe(cmd => {
       if (cmd.command === 'clear') {
         this._results.splice(0, this._results.length);
         CcTerminalComponent._clearTerminalResultsChildElements();
