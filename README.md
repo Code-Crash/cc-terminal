@@ -1,6 +1,6 @@
 # CcTerminalApp
 
-This project contain the source code for [CC Terminal](https://www.npmjs.com/package/cc-terminal) version 0.0.1.
+This project contain the source code for [CC Terminal](https://www.npmjs.com/package/cc-terminal).
 
 
 
