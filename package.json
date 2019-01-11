@@ -39,7 +39,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build-lib": "ng build cc-terminal && node ./projects/cc-terminal/assets-copy.js"
+    "build-lib": "ng build cc-terminal && node ./projects/cc-terminal/assets-copy.js",
+    "build-and-publish": "ng build cc-terminal && node ./projects/cc-terminal/assets-copy.js && cd dist/cc-terminal/ && npm publish && cd .. && cd .."
   },
   "private": true,
   "dependencies": {
