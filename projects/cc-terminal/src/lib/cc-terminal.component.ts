@@ -37,7 +37,8 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
   @ViewChild('cc_terminal_viewport') terminalViewport: ElementRef;
   @ViewChild('cc_terminal_results') terminalResults: ElementRef;
   @ViewChild('cc_terminal_target') terminalTarget: ElementRef;
-  @Input() ccClasses: any; // Get All the external classes
+  @Input() ccStyle: any; // Get All the external classes
+  @Input() ccEnabled: boolean = false; // This will defined if you want to enabled external commands and use this service.
   @Input() ccPrompt: { end: string, user: string, separator: string, path: string }; // Get the prompt
 
   /**
@@ -94,7 +95,9 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
         this._blur();
         this._clickHandler();
       } else {
-        _tService.interpret(cmd);
+        if (!this.ccEnabled) { // Check if the more commands are provided from external source.
+          _tService.interpret(cmd);
+        }
       }
     });
   }
@@ -143,23 +146,23 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
   ngOnInit() {
     this._aContext = new AudioContext();
     this._doSound(this._config.startSoundUrl);
-    // if (this.ccClasses && this.ccClasses.section) {
-    //   Object.keys(this.ccClasses.section || {}).forEach((key) => {
+    // if (this.ccStyle && this.ccStyle.section) {
+    //   Object.keys(this.ccStyle.section || {}).forEach((key) => {
     //     // Only allow background and color in section css style
     //     if (key !== 'color' && key !== 'background') {
-    //       delete this.ccClasses.section[key];
+    //       delete this.ccStyle.section[key];
     //     }
     //   });
     // }
-    // if (this.ccClasses && this.ccClasses.viewport) {
-    //   Object.keys(this.ccClasses.viewport || {}).forEach((key) => {
+    // if (this.ccStyle && this.ccStyle.viewport) {
+    //   Object.keys(this.ccStyle.viewport || {}).forEach((key) => {
     //     // Only allow background and color in viewport css style
     //     if (key !== 'color' && key !== 'background') {
-    //       delete this.ccClasses.viewport[key];
+    //       delete this.ccStyle.viewport[key];
     //     }
     //   });
     // }
-    // console.log('ccClasses:', this.ccClasses);
+    // console.log('ccStyle:', this.ccStyle);
     // console.log('ccPrompt:', this.ccPrompt);
     if (this.ccPrompt) {
       this._prompt = this._tService.initPrompt({ promptConfiguration: this.ccPrompt });
