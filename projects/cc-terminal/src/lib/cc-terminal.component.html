@@ -2,12 +2,11 @@
   on-paste='_handlePaste($event)' [ngStyle]="ccStyle?.section">
   <div class='cc_terminal_viewport' #cc_terminal_viewport id="cc_terminal_viewport" on-click="_clickHandler()"
     [ngStyle]="ccStyle?.viewport">
-    <div class='cc_terminal_results' #cc_terminal_results id="cc_terminal_results">
-    </div>
+    <div class='cc_terminal_results' #cc_terminal_results id="cc_terminal_results"></div>
     <span class='cc_terminal_prompt' *ngIf='_showPrompt'>
       {{ _prompt?.text }}
     </span>
-    <span class='cc_terminal_input' [ngStyle]="ccStyle?.input">
+    <span class='cc_terminal_input' [ngStyle]="ccStyle?.input" *ngIf='_showPrompt'>
       {{ _command }}
     </span>
     <span class='cc_terminal_cursor' [ngStyle]="ccStyle?.cursor" *ngIf='_showPrompt'>

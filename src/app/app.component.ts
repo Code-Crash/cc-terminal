@@ -12,7 +12,7 @@ export class AppComponent implements OnInit, OnDestroy {
   _command = '';
   _config: any;
   _enabledExternal = true;
-  _prompt = { end: '$', user: 'Sumit', separator: '@', path: '\\' };
+  _prompt = { end: '$', user: 'Pravin', separator: '@', path: '\\' };
   _disposableCommandObserver: any;
 
   constructor(_tService: CcTerminalService) {

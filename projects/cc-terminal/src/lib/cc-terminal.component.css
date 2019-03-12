@@ -1,6 +1,6 @@
 .cc_terminal {
   background-color: #000;
-  height: 500px;
+  height: calc(100vh);
   margin: auto;
   color: #12e012;
   font-family: monospace;
