@@ -14,6 +14,8 @@ npm install cc-terminal
 
 ## How to Use?
 
+### Simple Example to use existing functionality
+
 ```javascript
 
 // Step 1. In your app.module.ts, first you need to import cc-module and then, you need to add it in imports, please see as below:
@@ -48,14 +50,57 @@ import { CcTerminalModule } from 'cc-terminal';
 
 ```
 
+### Customize Styling Example
+
+```javascript
+// Step 1: Add style in your application component
+
+// ... Other imports
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  // ... other declaration
+  _styles: any; // declaration of a property which will assign to ccStyle in template
+  constructor() {
+    // custom styling defination
+    this._styles = {
+      section: {
+        color: 'lightgreen', background: 'black'
+      },
+      viewport: {
+        color: 'yellow', background: 'black'
+      },
+      input: {
+        color: 'red', background: 'black'
+      },
+      cursor: {
+        color: 'green', background: 'black'
+      }
+    };
+  }
+}
+
+```
+
+```html
+
+// Step 2: Add ccStyle property with the defined model in your coponent
+<cc-terminal [ccStyle]="_styles"></cc-terminal>
+```
+
 ```
 Note: There are more to come, please have patience! :)
 ```
 
 ## TODO:
 
-- [ ] Add classes to re design the terminal configuration from External Module.
-- [ ] Add Terminal Configuration from External Module.
-- [ ] Add Feasibility to create a custom commands.
+- [x] Add classes to re design the terminal configuration from External Module. [In Progress]
+- [x] Add Terminal Configuration from External Module.
+- [x] Add Feasibility to create a custom commands.
+- [ ] Add centralize command registry for simplicity. [High Priority]
 - [ ] Try to add support for complex commands
 - [ ] Add Test Cases
