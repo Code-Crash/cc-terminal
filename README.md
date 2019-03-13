@@ -6,10 +6,38 @@ This project contain the source code for [CC Terminal](https://www.npmjs.com/pac
 
 ## How to Install?
 
+### Step 1 (Install Library):
+
 ```sh
 # Please run following command in your terminal, before running this, make sure you already have installed Node, npm and angular cli.
 
 npm install cc-terminal
+```
+
+### Step 2 (To Get the assets from cc-terminal library to your project):
+
+1. Open angular.json
+2. Copy/Paste follows config into your architect > build > options > assets:
+
+```
+
+{
+  "glob": "**/*",
+  "input": "./node_modules/cc-terminal/lib/assets/",
+  "output": "./assets"
+}
+
+Example: 
+
+"assets": [
+  // ... Other assets like "src/favicon.ico", "src/assets",
+  {
+    "glob": "**/*",
+    "input": "./node_modules/cc-terminal/lib/assets/",
+    "output": "./assets"
+  }
+]
+
 ```
 
 ## How to Use?
@@ -66,10 +94,10 @@ export class AppComponent {
   // ... other declaration
   _styles: any; // declaration of a property which will assign to ccStyle in template
   constructor() {
-    // custom styling defination
+    // custom styling definition
     this._styles = {
       section: {
-        color: 'lightgreen', background: 'black'
+        color: 'lightgreen', background: 'black' // To Modify Default Width and Height, Add in Section
       },
       viewport: {
         color: 'yellow', background: 'black'
@@ -88,7 +116,7 @@ export class AppComponent {
 
 ```html
 
-// Step 2: Add ccStyle property with the defined model in your coponent
+<!-- Step 2: Add ccStyle property with the defined model in your component -->
 <cc-terminal [ccStyle]="_styles"></cc-terminal>
 ```
 
@@ -104,3 +132,7 @@ Note: There are more to come, please have patience! :)
 - [ ] Add centralize command registry for simplicity. [High Priority]
 - [ ] Try to add support for complex commands
 - [ ] Add Test Cases
+- [ ] Add Support For ASCII Characters on Terminal Output
+- [ ] Add Support For Images on Terminal Output
+- [ ] Add Support For Videos on Terminal Output
+- [ ] Add Support For Custom Design (Graphic or Canvas) on Terminal Output
