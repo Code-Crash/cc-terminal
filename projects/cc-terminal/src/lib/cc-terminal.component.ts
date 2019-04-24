@@ -5,14 +5,17 @@ import {
 } from '@angular/core';
 import { CcTerminalService } from './cc-terminal.service';
 import Timer = NodeJS.Timer;
-
+import { CommandStore } from './cc-terminal-command-store';
+import { Subject } from 'rxjs';
 @Component({
   selector: 'cc-terminal',
   templateUrl: './cc-terminal.component.html',
-  styleUrls: ['./cc-terminal.component.css']
+  styleUrls: ['./cc-terminal.component.css'],
+  providers: [CommandStore]
 })
 export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
   title = 'cc-terminal';
+  private ngUnsubscribe = new Subject(); // https://stackoverflow.com/questions/38008334/angular-rxjs-when-should-i-unsubscribe-from-subscription/41177163#41177163
   _command: String = '';
   _cursor: String = '_';
   _prompt: any;
@@ -38,13 +41,12 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
   @ViewChild('cc_terminal_results') terminalResults: ElementRef;
   @ViewChild('cc_terminal_target') terminalTarget: ElementRef;
   @Input() ccStyle: any; // Get All the external classes
-  @Input() ccEnabled: boolean = false; // This will defined if you want to enabled external commands and use this service.
   @Input() ccPrompt: { end: string, user: string, separator: string, path: string }; // Get the prompt
 
   /**
    * @description - adds \n to all strings that need formatting at index of string
-   *              - todo function is not able to break line twice in case the remaining string is still longer than
-   *              - todo screen -> but it would be best this does not happen -> maybe require min width of terminal div
+   *              - function is not able to break line twice in case the remaining string is still longer than
+   *              - screen -> but it would be best this does not happen -> maybe require min width of terminal div
    * @param width - width
    * @param text  - text
    * @param chr - character
@@ -69,7 +71,7 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
     }
   }
 
-  constructor(_tService: CcTerminalService, private renderer: Renderer2) { // renderer to add the class dynamically, while creating and rendering the output element
+  constructor(_tService: CcTerminalService, private renderer: Renderer2, private store: CommandStore) { // renderer to add the class dynamically, while creating and rendering the output element
     this._initializeConfig();
     this._tService = _tService;
     this._prompt = _tService.initPrompt(this._config);
@@ -77,28 +79,14 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
     this._allowTypingWriteDisplaying = this._config.allowTypingWriteDisplaying;
     this._disposableOutputObserver = _tService.on<any>('terminal-output').subscribe(termOut => {
       if (!termOut.added) {
-        termOut.added = true;
+        termOut.added = true; // TODO: We are not using this, we storing this commands in history, may be we can think of something to perform
         this._results.push(termOut);
       }
     });
+    this._tService.broadcast('store-ready', this.store); // BroadCast to let all component know that store is ready to use.
+    this._registerCommand(); // Register commands which will help to do the terminal operation
     this._disposableCommandObserver = _tService.on<any>('terminal-command').subscribe(cmd => {
-      if (cmd.command === 'clear') {
-        this._results.splice(0, this._results.length);
-        CcTerminalComponent._clearTerminalResultsChildElements();
-      } else if (cmd.command === 'reset') {
-        this._initializeConfig();
-        this._results = [];
-        CcTerminalComponent._clearTerminalResultsChildElements();
-        this._initial = true;
-        // this.ngOnInit();
-        this.ngOnInit();
-        this._blur();
-        this._clickHandler();
-      } else {
-        if (!this.ccEnabled) { // Check if the more commands are provided from external source.
-          _tService.interpret(cmd);
-        }
-      }
+      _tService.interpret(cmd);
     });
   }
 
@@ -125,9 +113,11 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
         for (let i = 0; i < items.length; i++) {
           if (is_type(items[i], 'image')) {
             this._tService.broadcast('terminal-output', {
-              output: true,
-              result: [{ text: this._prompt.text + this._command }, { text: 'You can\'t paste file' }],
-              breakLine: true,
+              details: {
+                output: true,
+                result: [{ text: this._prompt.text + this._command }, { text: 'You can\'t paste file' }],
+                breakLine: true,
+              }
             });
           } else if (is_type(items[i], 'text/plain')) {
             items[i].getAsString((string, stay) => {
@@ -146,6 +136,7 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
   ngOnInit() {
     this._aContext = new AudioContext();
     this._doSound(this._config.startSoundUrl);
+    this.store.addKeyValue({ name: 'author', key: 'output', value: true });
     // if (this.ccStyle && this.ccStyle.section) {
     //   Object.keys(this.ccStyle.section || {}).forEach((key) => {
     //     // Only allow background and color in section css style
@@ -170,8 +161,13 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
   }
 
   ngOnDestroy() {
+    // Clear Observable allocation of memory.
     this._disposableOutputObserver.unsubscribe();
     this._disposableCommandObserver.unsubscribe();
+
+    // Clear Storage allocation of memory.
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   ngDoCheck() {
@@ -196,7 +192,7 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
       this.terminalViewport.nativeElement.scrollTop = this.terminalViewport.nativeElement.scrollHeight; // always put scroll to bottom
     }];
     this._showPrompt = false;
-    const change = this._results[this._results.length - 1];
+    const change = this._results[this._results.length - 1].details;
     const spanElement = this.renderer.createElement('span');
     if (this._outputDelay) {
       for (let i = change.result.length - 1; i >= 0; i--) { // only reverse loop will type out the lines with delay proper and in order
@@ -341,10 +337,12 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
   _focus() {
     if (this._initial) {
       this._tService.broadcast('terminal-output', {
-        result: [{ text: 'How can I help you?', css: { color: 'red' } }],
-        breakLine: true,
-        output: true,
-        format: true
+        details: {
+          result: [{ text: 'How can I help you?', css: { color: 'red' } }],
+          breakLine: true,
+          output: true,
+          format: true
+        }
       });
     }
     this._initial = false;
@@ -431,11 +429,13 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
     if (!command) {
       // return; // If you want to do nothing if command is only enter, un comment this.
       this._tService.broadcast('terminal-output', {
-        output: true,
-        result: [
-          { text: this._prompt.text + this._command, },
-        ],
-        breakLine: true,
+        details: {
+          output: true,
+          result: [
+            { text: this._prompt.text + this._command, },
+          ],
+          breakLine: true,
+        }
       });
     }
     if (this._cmdHistory.length > 10) {
@@ -454,4 +454,34 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
   }
 
 
+  /**
+   * @description - This function will help you to register the commands
+   */
+  _registerCommand = () => {
+    // Clear Command to clear the terminal
+    this.store.addCommand({
+      name: 'clear',
+      details: { result: [], readonly: true },
+      callback: () => {
+        this._results.splice(0, this._results.length);
+        CcTerminalComponent._clearTerminalResultsChildElements();
+      }
+    });
+
+    // Reset Command to reset the terminal
+    this.store.addCommand({
+      name: 'reset',
+      details: { result: [], readonly: true },
+      callback: () => {
+        this._initializeConfig();
+        this._results = [];
+        CcTerminalComponent._clearTerminalResultsChildElements();
+        this._initial = true;
+        // this.ngOnInit();
+        this.ngOnInit();
+        this._blur();
+        this._clickHandler();
+      }
+    });
+  }
 }

@@ -11,9 +11,8 @@ export class AppComponent implements OnInit, OnDestroy {
   _tService: CcTerminalService;
   _command = '';
   _config: any;
-  _enabledExternal = true;
   _prompt = { end: '$', user: 'Pravin', separator: '@', path: '\\' };
-  _disposableCommandObserver: any;
+  store: any;
 
   constructor(_tService: CcTerminalService) {
     // this._tComponent._command = '';
@@ -39,23 +38,50 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   initService() {
-    this._disposableCommandObserver = this._tService.on<any>('terminal-command').subscribe(cmd => {
-      if (cmd.command === 'about') {
-        this._tService.broadcast('terminal-output', {
+    this._tService.on<any>('store-ready').subscribe(_store => {
+      this.store = _store;
+      this.registerExternalCommands(); // Register External or your custom commands
+      // Note: you can also register your commands from here using _store also
+      _store.addCommand({
+        name: 'test',
+        details: {
           output: true,
-          result: [{ text: this._tService.prompt.text + cmd.command }, { text: 'Pravin' }],
           breakLine: true,
-        });
-      } else if (cmd.command === 'author') {
-        this._tService.broadcast('terminal-output', {
-          output: true,
-          result: [{ text: this._tService.prompt.text + cmd.command }, { text: 'Pravin Tiwari<code-crash> [pravintiwari1992@gmail.com]' }],
-          breakLine: true,
-        });
-      } else {
-        if (this._enabledExternal) {
-          this._tService.interpret(cmd);
+          readonly: false,
+          result: [{
+            text: 'This is test command'
+          }]
         }
+      });
+    });
+  }
+
+  registerExternalCommands = () => {
+    this.store.addCommand({
+      name: 'about',
+      details: {
+        output: true,
+        breakLine: true,
+        readonly: true,
+        result: [{
+          text: 'This is a web based terminal, easy to use and register your commands and you can feel like using a actual terminal, make your website looks like terminal.'
+        }]
+      }
+    });
+
+    this.store.addCommand({
+      name: 'text',
+      details: {
+        result: [{
+          text: () => {
+            return 10 + 10;
+          }
+        }], readonly: true
+      },
+      callback: () => {
+        console.log('hello');
+        // this._tService.broadcast('terminal-command', { command: command });
+        alert('done');
       }
     });
   }
@@ -64,8 +90,6 @@ export class AppComponent implements OnInit, OnDestroy {
     console.log('Custom App Initialized!');
   }
 
-  ngOnDestroy() {
-    this._disposableCommandObserver.unsubscribe();
-  }
+  ngOnDestroy() { }
 
 }
