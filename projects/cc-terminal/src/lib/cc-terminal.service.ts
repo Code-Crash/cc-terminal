@@ -112,29 +112,34 @@ export class CcTerminalService implements OnDestroy {
           return item.name === command[0];
         })[0] || null);
     });
-    if (_command && _command.details && _command.details.result) {
+    if (_command && _command.name) {
       if (_command.callback && typeof _command.callback === 'function') {
         _command.callback();
-      } else {
-        switch (_command.name) {
-          case 'help':
-            _command.details.result = _command.details.result.map((_result) => {
-              if (_result && _result.text && typeof _result.text === 'function') {
-                let text = _result.text(this.store.state.commands.map((c) => { return c.name; }));
-                return { ..._result, text };
-              } else {
-                return _result;
-              }
-            });
-            break;
-          default:
-            _command.details.result = _command.details.result.map((_result) => {
-              return _result;
-            });
-        }
-        _command.details.result.splice(0, 0, { text: prompt.text + cmd.command });
-        this.broadcast('terminal-output', _command);
       }
+      switch (_command.name) {
+        case 'help':
+          _command.details.result = _command.details.result.map((_result) => {
+            if (_result && _result.text && typeof _result.text === 'function') {
+              let text = _result.text(this.store.state.commands.map((c) => { return c.name; }));
+              return { ..._result, text };
+            } else {
+              return _result;
+            }
+          });
+          break;
+        default:
+          _command.details.result = _command.details.result.map((_result) => {
+            if (_result && _result.text && typeof _result.text === 'function') {
+              let text = (_result.text()).toString();
+              return { ..._result, text };
+            } else {
+              return _result;
+            }
+          });
+      }
+      _command.details.result.splice(0, 0, { text: prompt.text + cmd.command });
+      console.log('Final:', _command);
+      this.broadcast('terminal-output', _command);
     } else {
       let result = '';
       try {

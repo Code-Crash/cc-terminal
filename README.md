@@ -130,6 +130,8 @@ Note: There are more to come, please have patience! :)
 - [x] Add Terminal Configuration from External Module.
 - [x] Add Feasibility to create a custom commands.
 - [ ] Add centralize command registry for simplicity. [High Priority]
+- [ ] Print commands in which is i Queue.
+- [ ] Add support to execute callback command and result command simultaneously.
 - [ ] Try to add support for complex commands
 - [ ] Add Test Cases
 - [ ] Add Support For ASCII Characters on Terminal Output

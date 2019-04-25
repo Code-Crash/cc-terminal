@@ -185,6 +185,36 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
 
   /**
    * @description - This will add the output on the terminal
+   * TODO: We need to simulate the commands which is not added on terminal output
+   *
+   * TODO: @example  -
+   *
+   *            this.store.addCommand({
+   *              name: 'example',
+   *               details: {
+   *                 breakLine: true,
+   *                 output: true, // Output false have error
+   *                 readonly: false,
+   *                 result: [{
+   *                   text: () => {
+   *                     return 10 + 10;
+   *                   }
+   *                 }],
+   *               },
+   *               callback: () => {
+   *                 this._tService.broadcast('terminal-command', { command: 'help' });
+   *                 this._tService.broadcast('terminal-output', {
+   *                   details: {
+   *                     output: true,
+   *                     breakLine: true,
+   *                     result: [
+   *                       { text: 'yum yum' }
+   *                     ]
+   *                   }
+   *                 });
+   *                 alert('done');
+   *               }
+   *            });
    */
   private _addToTerminalResults() {
     const _handlePromptScroll = [() => {
@@ -219,7 +249,7 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
   private _createTypedOutputElement(span: HTMLSpanElement, change: any, i: number, _handlePromptScroll: (() => any)[]) {
     const lineBr = ' -> \n ';
     const { line, textLine } = this._createOutputLineElement(change, i, lineBr);
-    if (change.output) {
+    if (change.output) { // If output is enabled for the command, then only print it
       line.textContent = ' ';
       const fi = _handlePromptScroll.length - 1;
       const wLine = line; // World Line
@@ -238,9 +268,9 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
         }
       });
     } else {
-      line.textContent = textLine;
-      span.appendChild(line);
-      this.terminalResults.nativeElement.appendChild(span);
+      // line.textContent = textLine;
+      // span.appendChild(line);
+      // this.terminalResults.nativeElement.appendChild(span);
     }
   }
 
@@ -461,7 +491,7 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
     // Clear Command to clear the terminal
     this.store.addCommand({
       name: 'clear',
-      details: { result: [], readonly: true },
+      details: { result: [], readonly: true, output: false },
       callback: () => {
         this._results.splice(0, this._results.length);
         CcTerminalComponent._clearTerminalResultsChildElements();
@@ -471,7 +501,7 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
     // Reset Command to reset the terminal
     this.store.addCommand({
       name: 'reset',
-      details: { result: [], readonly: true },
+      details: { result: [], readonly: true, output: false },
       callback: () => {
         this._initializeConfig();
         this._results = [];

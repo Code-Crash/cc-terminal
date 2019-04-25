@@ -8,9 +8,9 @@ describe('CcTerminalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CcTerminalComponent ]
+      declarations: [CcTerminalComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

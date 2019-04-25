@@ -53,7 +53,17 @@ export class AppComponent implements OnInit, OnDestroy {
           }]
         }
       });
+      this._tService.broadcast('terminal-output', { // Add a welcome message on store ready
+        details: {
+          output: true,
+          breakLine: true,
+          result: [
+            { text: 'Welcome Message on external project', css: {color: 'pink'} }
+          ]
+        }
+      });
     });
+
   }
 
   registerExternalCommands = () => {
@@ -69,18 +79,30 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     });
 
+    // TODO: Handle this kind of
     this.store.addCommand({
-      name: 'text',
+      name: 'example',
       details: {
+        breakLine: true,
+        output: true, // Output false have error
+        readonly: false,
         result: [{
           text: () => {
             return 10 + 10;
           }
-        }], readonly: true
+        }],
       },
       callback: () => {
-        console.log('hello');
-        // this._tService.broadcast('terminal-command', { command: command });
+        this._tService.broadcast('terminal-command', { command: 'help' }); // Execute command through code
+        this._tService.broadcast('terminal-output', { // To some output to terminal directly
+          details: {
+            output: true,
+            breakLine: true,
+            result: [
+              { text: 'yum yum' }
+            ]
+          }
+        });
         alert('done');
       }
     });

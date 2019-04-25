@@ -35,16 +35,20 @@ export class CommandStore extends Store<CommandState> {
   public addCommand(command: CommandInterface): void {
     let _regex = /^[a-zA-Z]+$/;
     if (command && command.name && _regex.test(command.name)) {
-      const exists = this.state.commands.map(function (e) { return e.name; }).indexOf(command.name);
-      if (exists === -1) {
-        this.setState({
-          ...this.state,
-          commands: [...this.state.commands, command]
-        });
+      if (command && command.details && command.details.hasOwnProperty('output')) {
+        const exists = this.state.commands.map(function (e) { return e.name; }).indexOf(command.name);
+        if (exists === -1) {
+          this.setState({
+            ...this.state,
+            commands: [...this.state.commands, command]
+          });
+        } else {
+          console.error('You are trying to add duplicate command, which is not allowed, command name: ' + command.name);
+          // alert('You are trying to add duplicate command, which is not allowed, command name: ' + command.name);
+          // throw 'You are trying to add duplicate command, which is not allowed, command name: ' + command.name;
+        }
       } else {
-        console.error('You are trying to add duplicate command, which is not allowed, command name: ' + command.name);
-        // alert('You are trying to add duplicate command, which is not allowed, command name: ' + command.name);
-        // throw 'You are trying to add duplicate command, which is not allowed, command name: ' + command.name;
+        console.error('To add a new command, we need output property, command name: ' + command.name);
       }
     } else {
       console.error('Command name is not valid to add in command list, command name should be from [a-z | A-Z] without containing space, command name: ' + command.name);

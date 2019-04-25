@@ -38,7 +38,7 @@ export interface CommandResultInterface {
 export interface CommandInterface {
   name: string;
   details: {
-    output?: boolean,
+    output: boolean,
     readonly?: boolean,
     breakLine?: boolean,
     format?: any,
