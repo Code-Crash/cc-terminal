@@ -126,11 +126,12 @@ Note: There are more to come, please have patience! :)
 
 ## TODO:
 
-- [x] Add classes to re design the terminal configuration from External Module. [In Progress]
+- [x] Add classes/style to re design the terminal configuration from External Module
 - [x] Add Terminal Configuration from External Module.
 - [x] Add Feasibility to create a custom commands.
-- [ ] Add centralize command registry for simplicity. [High Priority]
-- [ ] Print commands in which is i Queue.
+- [x] Add centralize command registry for simplicity. [High Priority]
+- [ ] Print commands from command Queue sequentially. [In Progress]
+- [ ] Add support for custom welcome message
 - [ ] Add support to execute callback command and result command simultaneously.
 - [ ] Try to add support for complex commands
 - [ ] Add Test Cases
