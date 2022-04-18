@@ -2,7 +2,9 @@
 
 This project contain the source code for [CC Terminal](https://www.npmjs.com/package/cc-terminal).
 
+Simple Demo: https://codesandbox.io/s/03w0sg
 
+Try `help` command or `10+10` :P
 
 ## How to Install?
 
