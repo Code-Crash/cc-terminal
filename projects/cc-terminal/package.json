@@ -1,6 +1,6 @@
 {
   "name": "cc-terminal",
-  "version": "0.0.7-beta",
+  "version": "0.0.8-beta",
   "description": "AngularJs Web based terminal module",
   "peerDependencies": {
     "@angular/common": "^13.3.0",
