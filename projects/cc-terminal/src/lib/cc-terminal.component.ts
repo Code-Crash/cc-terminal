@@ -15,7 +15,7 @@ import { Subject } from 'rxjs';
 })
 export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
   title = 'cc-terminal';
-  private ngUnsubscribe = new Subject(); // https://stackoverflow.com/questions/38008334/angular-rxjs-when-should-i-unsubscribe-from-subscription/41177163#41177163
+  private ngUnsubscribe = new Subject<boolean>(); // https://stackoverflow.com/questions/38008334/angular-rxjs-when-should-i-unsubscribe-from-subscription/41177163#41177163
   _command: String = '';
   _cursor: String = '_';
   _prompt: any;
@@ -166,7 +166,7 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
     this._disposableCommandObserver.unsubscribe();
 
     // Clear Storage allocation of memory.
-    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.next(true);
     this.ngUnsubscribe.complete();
   }
 
