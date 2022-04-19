@@ -2,6 +2,7 @@
 
 This project is to create a web based terminal.
 
+Try to enter `help` or `10+10` or even `alert("Hello World")` :P
 
 ## How to Install?
 

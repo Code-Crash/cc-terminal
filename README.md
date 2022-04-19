@@ -4,8 +4,7 @@ This project contain the source code for [CC Terminal](https://www.npmjs.com/pac
 
 Simple Demo: https://codesandbox.io/s/03w0sg
 
-Try `help` command or `10+10` :P
-
+Try to enter `help` or `10+10` or even `alert("Hello World")` :P
 ## How to Install?
 
 ### Step 1 (Install Library):
