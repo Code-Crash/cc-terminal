@@ -136,7 +136,7 @@ export class CcTerminalComponent implements OnInit, OnDestroy, DoCheck {
   ngOnInit() {
     this._aContext = new AudioContext();
     this._doSound(this._config.startSoundUrl);
-    this.store.addKeyValue({ name: 'author', key: 'output', value: true });
+    // this.store.addKeyValue({ name: 'author', key: 'output', value: true }); // Note: We can't modify read only properties
     // if (this.ccStyle && this.ccStyle.section) {
     //   Object.keys(this.ccStyle.section || {}).forEach((key) => {
     //     // Only allow background and color in section css style

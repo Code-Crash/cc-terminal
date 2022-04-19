@@ -23,7 +23,7 @@ const COMMANDS = [
       readonly: true,
       breakLine: true,
       result: [
-        { text: 'Pravin Tiwari<code-crash> [pravintiwari1992@gmail.com]' },
+        { text: 'Pravin Tiwari<code-crash> [pravintiwari1992@gmail.com] github: https://github.com/code-crash' },
       ],
     }
   }
