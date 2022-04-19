@@ -79,7 +79,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     });
 
-    // TODO: Handle this kind of
+    // TODO: Handle chain of commands using command service on demand through code (TBD: sync/async)
     this.store.addCommand({
       name: 'example',
       details: {

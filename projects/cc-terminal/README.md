@@ -4,6 +4,11 @@ This project is to create a web based terminal.
 
 Try to enter `help` or `10+10` or even `alert("Hello World")` :P
 
+## Demo
+
+1. Simple Integration: https://codesandbox.io/s/03w0sg
+2. Custom Prompt and Register Custom Commands: https://codesandbox.io/s/hidden-fog-57lnwh
+
 ## How to Install?
 
 ### Step 1 (Install Library):
